@@ -92,15 +92,15 @@ class MigrationBuilder
         })->all();
     }
 
-    private function schemaStatement(array $statements, $tableName, $creating = false)
+    private function schemaStatement(array $statements, $tableName)
     {
         // name of the method to call off the Schema facade
-        $schemaMethodName = $creating ? 'create' : 'table';
+        $schemaMethodName = $this->isCreating ? 'create' : 'table';
         $closure = new Closure([
-            'params' => [new Param($schemaMethodName, null, new Name('Blueprint'))],
+            'params' => [new Param('table', null, new Name('Blueprint'))],
             'stmts' => $statements
         ]);
-        return new StaticCall(new Name('Schema'), 'table', [new String_($tableName), $closure]);
+        return new StaticCall(new Name('Schema'), $schemaMethodName, [new String_($tableName), $closure]);
     }
 
     /**
