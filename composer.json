@@ -1,4 +1,13 @@
 {
+  "name": "netsells/laravel-migration-generator",
+  "description": "Generates laravel migration files",
+  "type": "library",
+  "authors": [
+    {
+      "name": "James Judd",
+      "email": "james.judd@netsells.co.uk"
+    }
+  ],
   "require": {
     "php": ">=7.0",
     "nikic/php-parser": "^3.1",
