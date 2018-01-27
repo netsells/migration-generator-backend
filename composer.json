@@ -1,0 +1,12 @@
+{
+  "require": {
+    "php": ">=7.0",
+    "nikic/php-parser": "^3.1",
+    "nesbot/carbon": "^1.9"
+  },
+  "autoload": {
+    "psr-4": {
+      "Netsells\\MigrationGenerator\\": "src/"
+    }
+  }
+}
