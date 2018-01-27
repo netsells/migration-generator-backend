@@ -34,6 +34,7 @@ class MigrationBuilder
      */
     private $isCreating;
     private $tableName;
+
     public function __construct(array $columns, $migrationName, $tableName, $isCreating = true)
     {
         $this->columns = $columns;
@@ -41,6 +42,7 @@ class MigrationBuilder
         $this->tableName = $tableName;
         $this->isCreating = $isCreating;
     }
+
     public function generate()
     {
         $this->tableVariable = new Variable('table');
@@ -48,6 +50,7 @@ class MigrationBuilder
             $this->migrationStatements()
         );
     }
+
     /**
      * generates the Laravel convention file name
      */
@@ -56,6 +59,7 @@ class MigrationBuilder
         $timestamp = Carbon::now()->format('Y_m_d_his');
         return $timestamp . '_' . snake_case($this->migrationName) . '.php';
     }
+
     private function foreignKeyStatement(array $column)
     {
         $foreignKey = $column['foreign_key'];
@@ -66,6 +70,7 @@ class MigrationBuilder
         $onDelete = new MethodCall($onUpdate, 'onDelete', [new String_($foreignKey['on_delete'])]);
         return $onDelete;
     }
+
     private function migrationStatements()
     {
         $tableName = $this->tableName;
@@ -86,6 +91,7 @@ class MigrationBuilder
             return $builder->getNode();
         })->all();
     }
+
     private function schemaStatement(array $statements, $tableName, $creating = false)
     {
         // name of the method to call off the Schema facade
@@ -96,6 +102,7 @@ class MigrationBuilder
         ]);
         return new StaticCall(new Name('Schema'), 'table', [new String_($tableName), $closure]);
     }
+
     /**
      * Statements which are inside the Schema closure argument inside the up method
      * @return array
@@ -128,6 +135,7 @@ class MigrationBuilder
         }
         return $columnStatements;
     }
+
     private function downStatements()
     {
         $tableNames = collect($this->columns)->map(function ($column) {
@@ -136,10 +144,12 @@ class MigrationBuilder
         $dropColumnStmt = new MethodCall($this->tableVariable, 'dropColumn', [new Array_($tableNames)]);
         return [$dropColumnStmt];
     }
+
     private function timestampColumnsStatement()
     {
         return new MethodCall($this->tableVariable, 'timestamps');
     }
+
     /*
      * Will return the body of the up() method
      */
@@ -147,6 +157,7 @@ class MigrationBuilder
     {
         return $this->schemaStatement($this->upStatements(), $tableName);
     }
+
     /*
      * Will return the body for the down() method
      */

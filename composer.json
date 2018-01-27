@@ -17,5 +17,9 @@
     "psr-4": {
       "Netsells\\MigrationGenerator\\": "src/"
     }
+  },
+  "scripts": {
+    "cs": "phpcs --standard=psr2 src/",
+    "csfix": "phpcbf --standard=psr2 src/"
   }
 }
