@@ -112,22 +112,27 @@ class MigrationBuilder
         foreach ($this->columns as $column) {
             $columnNameParameter = new String_($column['name']);
             $columnStatement = new MethodCall($this->tableVariable, $column['type'], [$columnNameParameter]);
+
             if ($column['nullable']) {
                 // for chained method calls the expression is the input / variable to the next method call
                 $columnStatement = new MethodCall($columnStatement, 'nullable');
             }
-            if ($column['default']) {
+
+            if (array_key_exists('default', $column) && $column['default']) {
                 // for chained method calls the expression is the input / variable to the next method call
                 $columnStatement = new MethodCall($columnStatement, 'default', [new String_($column['default'])]);
             }
-            if ($column['unsigned']) {
+
+            if (array_key_exists('unsigned', $column) && $column['unsigned']) {
                 $columnStatement = new MethodCall($columnStatement, 'unsigned');
             }
-            if ($column['is_foreign_key']) {
+
+            if (array_key_exists('is_foreign_key', $column) && $column['is_foreign_key']) {
                 $columnStatements[] = $columnStatement;
                 $columnStatements[] = $this->foreignKeyStatement($column);
                 continue;
             }
+
             $columnStatements[] = $columnStatement;
         }
         if ($this->isCreating) {
