@@ -42,4 +42,26 @@ class CreateMigrationTest extends TestCase
 
         $this->assertContains('Schema::table(\'users\',', $migration);
     }
+
+    public function testEnumColumn()
+    {
+        $columns = [
+            [
+                'name' => 'payment_method',
+                'type' => 'enum',
+                'allowed_values' => [
+                    'card',
+                    'paypal',
+                    'applepay'
+                ],
+                'nullable' => false
+            ]
+        ];
+
+        $builder = new MigrationBuilder($columns, 'create_payments_table', 'payments', true);
+        $migration = $builder->generate();
+
+        $this->assertContains('Schema::create(\'payments\',', $migration);
+        $this->assertContains('$table->enum(\'payment_method\', [\'card\', \'paypal\', \'applepay\'])', $migration);
+    }
 }

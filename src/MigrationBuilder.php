@@ -110,8 +110,7 @@ class MigrationBuilder
     private function upStatements()
     {
         foreach ($this->columns as $column) {
-            $columnNameParameter = new String_($column['name']);
-            $columnStatement = new MethodCall($this->tableVariable, $column['type'], [$columnNameParameter]);
+            $columnStatement = $this->methodCallForColumn($column);
 
             if ($column['nullable']) {
                 // for chained method calls the expression is the input / variable to the next method call
@@ -172,5 +171,23 @@ class MigrationBuilder
             return new StaticCall(new Name('Schema'), 'dropIfExists', [new String_($tableName)]);
         }
         return $this->schemaStatement($this->downStatements(), $tableName);
+    }
+
+    private function methodCallForColumn($column): MethodCall
+    {
+        $parameters = [new String_($column['name'])];
+
+        if ($column['type'] === 'enum') {
+            $allowedValueStrings = [];
+            if (array_key_exists('allowed_values', $column)) {
+                $allowedValueStrings = collect($column['allowed_values'])->map(function ($value) {
+                    return new String_($value);
+                })->all();
+            }
+            $allowedValues = new Array_($allowedValueStrings);
+            $parameters[] = $allowedValues;
+        }
+
+        return new MethodCall($this->tableVariable, $column['type'], $parameters);
     }
 }
