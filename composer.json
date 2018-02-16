@@ -12,7 +12,7 @@
     "php": ">=7.0",
     "nikic/php-parser": "^3.1",
     "nesbot/carbon": "^1.9",
-    "illuminate/support": "^5.5"
+    "illuminate/support": "^5.4"
   },
   "autoload": {
     "psr-4": {
